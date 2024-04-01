@@ -10,18 +10,30 @@ import {
   Icon,
   Menu,
   Table,
+  Button,
 } from "semantic-ui-react";
 import ProductService from "../services/productService";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AddToCart } from "../store/actions/cartActions";
+import { toast } from "react-toastify";
 
 export default function ProductList() {
+  const dispatch = useDispatch(); //bir aksiyon cagirmak icin kullanilir
+
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    let productService = new ProductService()
-    productService.getProducts().then(result => setProducts(result.data.data))
-  }, [])
-  
+    let productService = new ProductService();
+    productService
+      .getProducts()
+      .then((result) => setProducts(result.data.data));
+  }, []);
+
+  const handleAddToCart = (product) => {
+    dispatch(AddToCart(product));
+    toast.success(`${product.productName} Added to cart`);
+  };
 
   return (
     <div>
@@ -33,17 +45,27 @@ export default function ProductList() {
             <TableHeaderCell>Units In Stock</TableHeaderCell>
             <TableHeaderCell>Description</TableHeaderCell>
             <TableHeaderCell>Category</TableHeaderCell>
+            <TableHeaderCell></TableHeaderCell>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           {products.map((product) => (
             <TableRow key={product.id}>
-              <TableCell><Link to={`/products/${product.id}`}>{product.productName}</Link></TableCell>
+              <TableCell>
+                <Link to={`/products/${product.id}`}>
+                  {product.productName}
+                </Link>
+              </TableCell>
               <TableCell>{product.unitPrice}</TableCell>
               <TableCell>{product.unitsInStock}</TableCell>
               <TableCell>{product.quantityPerUnit}</TableCell>
               <TableCell>{product.category.categoryName}</TableCell>
+              <TableCell>
+                <Button primary onClick={() => handleAddToCart(product)}>
+                  Add To Cart
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

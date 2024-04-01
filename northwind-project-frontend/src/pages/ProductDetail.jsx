@@ -20,17 +20,19 @@ export default function ProductDetail() {
     productService
       .getProductById(id)
       .then((result) => setProduct(result.data.data));
-  }, [id]);
+  }, []);
 
   return (
     <div>
       <Card fluid>
         <CardContent>
-          <div >
+          <div>
             <CardHeader>{product.productName}</CardHeader>
             <CardMeta>categoryName Error</CardMeta>
             <CardDescription>{product.quantityPerUnit}</CardDescription>
-            <CardDescription><strong>Price: {product.unitPrice}</strong></CardDescription>
+            <CardDescription>
+              <strong>Price: {product.unitPrice}</strong>
+            </CardDescription>
           </div>
         </CardContent>
         <CardContent extra>
