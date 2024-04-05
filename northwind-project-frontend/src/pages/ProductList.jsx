@@ -22,6 +22,16 @@ export default function ProductList() {
   const dispatch = useDispatch(); //bir aksiyon cagirmak icin kullanilir
 
   const [products, setProducts] = useState([]);
+  const [pageSizeproducts, setPageSizeProducts] = useState([]);
+  const [pageSizeValue, setPageSizeValue] = useState("10");
+  const [pageNoValue, setPageNoValue] = useState("1");
+
+  useEffect(() => {
+    let productService = new ProductService();
+    productService
+      .getProductByPage(pageNoValue, pageSizeValue)
+      .then((result) => setPageSizeProducts(result.data.data));
+  }, [pageSizeValue, pageNoValue]);
 
   useEffect(() => {
     let productService = new ProductService();
@@ -37,6 +47,15 @@ export default function ProductList() {
 
   return (
     <div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Menu>
+          <MenuItem header>Products per page:</MenuItem>
+          <MenuItem onClick={() => setPageSizeValue("10")}>10</MenuItem>
+          <MenuItem onClick={() => setPageSizeValue("50")}>50</MenuItem>
+          <MenuItem onClick={() => setPageSizeValue("100")}>100</MenuItem>
+        </Menu>
+      </div>
+
       <Table celled>
         <TableHeader>
           <TableRow>
@@ -50,7 +69,7 @@ export default function ProductList() {
         </TableHeader>
 
         <TableBody>
-          {products.map((product) => (
+          {pageSizeproducts.map((product) => (
             <TableRow key={product.id}>
               <TableCell>
                 <Link to={`/products/${product.id}`}>
@@ -72,19 +91,19 @@ export default function ProductList() {
 
         <TableFooter>
           <TableRow>
-            <TableHeaderCell colSpan="3">
-              <Menu floated="right" pagination>
-                <MenuItem as="a" icon>
-                  <Icon name="chevron left" />
-                </MenuItem>
-                <MenuItem as="a">1</MenuItem>
-                <MenuItem as="a">2</MenuItem>
-                <MenuItem as="a">3</MenuItem>
-                <MenuItem as="a">4</MenuItem>
-                <MenuItem as="a" icon>
-                  <Icon name="chevron right" />
-                </MenuItem>
-              </Menu>
+            <TableHeaderCell colSpan="6">
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Menu pagination>
+                  <MenuItem as="a" icon>
+                    <Icon name="chevron left" />
+                  </MenuItem>
+                  <MenuItem onClick={() => setPageNoValue("1")}>1</MenuItem>
+                  <MenuItem onClick={() => setPageNoValue("2")}>2</MenuItem>
+                  <MenuItem as="a" icon>
+                    <Icon name="chevron right" />
+                  </MenuItem>
+                </Menu>
+              </div>
             </TableHeaderCell>
           </TableRow>
         </TableFooter>
