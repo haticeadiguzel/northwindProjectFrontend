@@ -20,7 +20,7 @@ export default function ProductDetail() {
     productService
       .getProductById(id)
       .then((result) => setProduct(result.data.data));
-  }, []);
+  }, [id]);
 
   return (
     <div>
